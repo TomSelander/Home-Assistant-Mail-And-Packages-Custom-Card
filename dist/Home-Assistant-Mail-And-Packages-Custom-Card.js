@@ -3,6 +3,9 @@ const LitElement = customElements.get("hui-masonry-view")
   : Object.getPrototypeOf(customElements.get("hui-view"));
 const html = LitElement.prototype.html;
 
+// Card version (update here to change displayed version)
+const VERSION = "0.07";
+
 const curDatetime = new Date();
 
 const datetime = curDatetime.getMonth().toString() + curDatetime.getDate().toString() + curDatetime.getFullYear().toString() + curDatetime.getHours().toString() + curDatetime.getMinutes().toString();
@@ -90,7 +93,7 @@ class MailAndPackagesCard extends LitElement {
         ${this._config.details !== false ? this.renderDetails(stateObj) : ""}
         ${this._config.image !== false ? this.renderImage(stateObj) : ""}
         ${this._config.camera !== false ? this.renderCamera(stateObj) : ""}
-        <span class="usps_update">V 0.06 Checked: ${stateObj.state}</span>
+        <span class="usps_update">V ${VERSION} Checked: ${stateObj.state}</span>
       </ha-card>
     `;
     }

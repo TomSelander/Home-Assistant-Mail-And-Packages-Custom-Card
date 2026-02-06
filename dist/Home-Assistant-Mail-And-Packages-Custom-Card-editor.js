@@ -24,6 +24,9 @@ const LitElement = customElements.get("hui-masonry-view") ?
 const html = LitElement.prototype.html;
 const css = LitElement.prototype.css;
 
+// Card version (update here to change displayed version in the editor)
+const VERSION = "0.07";
+
 export class MailAndPackagesCardEditor extends LitElement {
     setConfig(config) {
         this._config = config;
@@ -135,8 +138,7 @@ export class MailAndPackagesCardEditor extends LitElement {
 
         return html `
       <div class="card-config">
-    Version: 0.07
-    Enable Links
+    Version: ${VERSION}
         <div>
           <paper-input
             label="Name"
@@ -573,7 +575,6 @@ export class MailAndPackagesCardEditor extends LitElement {
                   </paper-listbox>
                 </paper-dropdown-menu>
               `}
-        Enable Camera Rotation
         <div class="switch-row">
             <div class="switch-label">Enable Camera Rotation</div>
             <ha-switch
