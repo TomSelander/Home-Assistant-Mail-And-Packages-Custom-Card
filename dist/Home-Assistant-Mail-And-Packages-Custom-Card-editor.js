@@ -179,36 +179,13 @@ export class MailAndPackagesCardEditor extends LitElement {
                   </paper-listbox>
                 </paper-dropdown-menu>
               `}
-          ${customElements.get("ha-entity-picker")
-            ? html`
-                <ha-entity-picker
-                label="Delivery Message Sensor"
-                  .hass="${this.hass}"
-                  .value="${this._deliveries_message}"
-                  .configValue=${"deliveries_message"}
-                  domain-filter="sensor"
-                  @change="${this._valueChanged}"
-                  allow-custom-entity
-                ></ha-entity-picker>
-              `
-            : html`
-                <paper-dropdown-menu
-                  label="Delivery Message Sensor"
-                  @value-changed="${this._valueChanged}"
-                  .configValue="${"deliveries_message"}"
-                >
-                  <paper-listbox
-                    slot="dropdown-content"
-                    .selected="${entities.indexOf(this._deliveries_message)}"
-                  >
-                    ${entities.map((deliveries_message) => {
-                      return html`
-                        <paper-item>${deliveries_message}</paper-item>
-                      `;
-                    })}
-                  </paper-listbox>
-                </paper-dropdown-menu>
-              `}
+          <paper-input
+            label="Delivery Message (plain text or sensor entity)"
+            .value="${this._deliveries_message}"
+            .configValue="${"deliveries_message"}"
+            @value-changed="${this._valueChanged}"
+            placeholder="e.g., 'You have deliveries!' or 'sensor.delivery_message'"
+          ></paper-input>
          ${customElements.get("ha-entity-picker")
             ? html`
                 <ha-entity-picker

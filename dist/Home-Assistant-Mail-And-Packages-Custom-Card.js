@@ -96,7 +96,17 @@ class MailAndPackagesCard extends LitElement {
     }
 
     renderDetails(stateObj) {
-        const deliveries_message = this._config.deliveries_message ? this.hass.states[this._config.deliveries_message].state : false;
+        const deliveries_message_config = this._config.deliveries_message || "";
+        // Check if it's a sensor entity reference or plain text
+        let deliveries_message = false;
+        if (deliveries_message_config.includes(".") && deliveries_message_config in this.hass.states) {
+            // It's a sensor entity
+            deliveries_message = this.hass.states[deliveries_message_config].state;
+        } else if (deliveries_message_config && deliveries_message_config.length > 0) {
+            // It's plain text
+            deliveries_message = deliveries_message_config;
+        }
+        
         const packages_delivered = this._config.packages_delivered ? this.hass.states[this._config.packages_delivered].state : false;
         const packages_in_transit = this._config.packages_in_transit ? this.hass.states[this._config.packages_in_transit].state : false;
         const fedex_packages = this._config.fedex_packages ? this.hass.states[this._config.fedex_packages].state : false;
