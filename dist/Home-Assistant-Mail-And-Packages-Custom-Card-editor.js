@@ -136,6 +136,7 @@ export class MailAndPackagesCardEditor extends LitElement {
         return html `
       <div class="card-config">
     Version: 0.07
+    Enable Links
         <div>
           <paper-input
             label="Name"
@@ -572,7 +573,7 @@ export class MailAndPackagesCardEditor extends LitElement {
                   </paper-listbox>
                 </paper-dropdown-menu>
               `}
-
+        Enable Camera Rotation
         <div class="switch-row">
             <div class="switch-label">Enable Camera Rotation</div>
             <ha-switch
