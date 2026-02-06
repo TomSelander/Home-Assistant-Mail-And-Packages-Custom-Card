@@ -131,7 +131,7 @@ export class MailAndPackagesCardEditor extends LitElement {
 
         return html `
       <div class="card-config">
-    Version: 0.06
+    Version: 0.07
         <div>
           <paper-input
             label="Name"
@@ -144,11 +144,14 @@ export class MailAndPackagesCardEditor extends LitElement {
             .configValue="${"details"}"
             @change="${this._valueChanged}"
             >Show Details</ha-switch>
-          <ha-switch
-            .checked=${this._enable_links}
-            .configValue="${"enable_links"}"
-            @change="${this._valueChanged}"
-            >Enable Text Links</ha-switch>
+          <div class="switch-row">
+            <div class="switch-label">Enable Text Links</div>
+            <ha-switch
+              .checked=${this._enable_links}
+              .configValue="${"enable_links"}"
+              @change="${this._valueChanged}"
+            ></ha-switch>
+          </div>
           ${customElements.get("ha-entity-picker")
             ? html`
                 <ha-entity-picker
@@ -433,12 +436,14 @@ export class MailAndPackagesCardEditor extends LitElement {
                 </paper-dropdown-menu>
               `}
 
-        <ha-switch
-            .checked=${this._camera}
-            .configValue="${"camera"}"
-            @change="${this._valueChanged}"
-            >Show Camera</ha-switch
-          >
+        <div class="switch-row">
+            <div class="switch-label">Show Camera</div>
+            <ha-switch
+              .checked=${this._camera}
+              .configValue="${"camera"}"
+              @change="${this._valueChanged}"
+            ></ha-switch>
+          </div>
 
         ${customElements.get("ha-entity-picker")
             ? html`
@@ -564,12 +569,14 @@ export class MailAndPackagesCardEditor extends LitElement {
                 </paper-dropdown-menu>
               `}
 
-        <ha-switch
-            .checked=${this._enable_camera_rotation}
-            .configValue="${"enable_camera_rotation"}"
-            @change="${this._valueChanged}"
-            >Enable Camera Rotation</ha-switch
-          >
+        <div class="switch-row">
+            <div class="switch-label">Enable Camera Rotation</div>
+            <ha-switch
+              .checked=${this._enable_camera_rotation}
+              .configValue="${"enable_camera_rotation"}"
+              @change="${this._valueChanged}"
+            ></ha-switch>
+          </div>
         </div>
       </div>
     `;
@@ -609,6 +616,17 @@ export class MailAndPackagesCardEditor extends LitElement {
       .side-by-side > * {
         flex: 1;
         padding-right: 4px;
+      }
+      .switch-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-top: 8px;
+      }
+      .switch-label {
+        font-size: 14px;
+        color: var(--primary-text-color);
+        padding-right: 8px;
       }
     `;
     }
