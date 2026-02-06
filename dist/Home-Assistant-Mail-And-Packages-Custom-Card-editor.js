@@ -80,8 +80,20 @@ export class MailAndPackagesCardEditor extends LitElement {
         return this._config.gif_sensor || "";
     }
 
-    get _camera_entity() {
-        return this._config.camera_entity || "";
+    get _amazon_camera() {
+        return this._config.amazon_camera || "";
+    }
+
+    get _fedex_camera() {
+        return this._config.fedex_camera || "";
+    }
+
+    get _usps_camera() {
+        return this._config.usps_camera || "";
+    }
+
+    get _ups_camera() {
+        return this._config.ups_camera || "";
     }
 
     get _image() {
@@ -92,8 +104,16 @@ export class MailAndPackagesCardEditor extends LitElement {
         return this._config.camera !== false;
     }
 
+    get _enable_camera_rotation() {
+        return this._config.enable_camera_rotation === true;
+    }
+
     get _details() {
         return this._config.details !== false;
+    }
+
+    get _enable_links() {
+        return this._config.enable_links !== false;
     }
 
     render() {
@@ -124,6 +144,11 @@ export class MailAndPackagesCardEditor extends LitElement {
             .configValue="${"details"}"
             @change="${this._valueChanged}"
             >Show Details</ha-switch>
+          <ha-switch
+            .checked=${this._enable_links}
+            .configValue="${"enable_links"}"
+            @change="${this._valueChanged}"
+            >Enable Text Links</ha-switch>
           ${customElements.get("ha-entity-picker")
             ? html`
                 <ha-entity-picker
@@ -441,10 +466,10 @@ export class MailAndPackagesCardEditor extends LitElement {
         ${customElements.get("ha-entity-picker")
             ? html`
                 <ha-entity-picker
-                label="Camera Entity"
+                label="Amazon Camera Entity"
                   .hass="${this.hass}"
-                  .value="${this._camera_entity}"
-                  .configValue=${"camera_entity"}
+                  .value="${this._amazon_camera}"
+                  .configValue=${"amazon_camera"}
                   domain-filter="camera"
                   @change="${this._valueChanged}"
                   allow-custom-entity
@@ -452,13 +477,13 @@ export class MailAndPackagesCardEditor extends LitElement {
               `
             : html`
                 <paper-dropdown-menu
-                  label="Camera Entity"
+                  label="Amazon Camera Entity"
                   @value-changed="${this._valueChanged}"
-                  .configValue="${"camera_entity"}"
+                  .configValue="${"amazon_camera"}"
                 >
                   <paper-listbox
                     slot="dropdown-content"
-                    .selected="${camera_entities.indexOf(this._camera_entity)}"
+                    .selected="${camera_entities.indexOf(this._amazon_camera)}"
                   >
                     ${camera_entities.map((camera_entity) => {
                       return html`
@@ -468,6 +493,106 @@ export class MailAndPackagesCardEditor extends LitElement {
                   </paper-listbox>
                 </paper-dropdown-menu>
               `}
+
+        ${customElements.get("ha-entity-picker")
+            ? html`
+                <ha-entity-picker
+                label="FedEx Camera Entity"
+                  .hass="${this.hass}"
+                  .value="${this._fedex_camera}"
+                  .configValue=${"fedex_camera"}
+                  domain-filter="camera"
+                  @change="${this._valueChanged}"
+                  allow-custom-entity
+                ></ha-entity-picker>
+              `
+            : html`
+                <paper-dropdown-menu
+                  label="FedEx Camera Entity"
+                  @value-changed="${this._valueChanged}"
+                  .configValue="${"fedex_camera"}"
+                >
+                  <paper-listbox
+                    slot="dropdown-content"
+                    .selected="${camera_entities.indexOf(this._fedex_camera)}"
+                  >
+                    ${camera_entities.map((camera_entity) => {
+                      return html`
+                        <paper-item>${camera_entity}</paper-item>
+                      `;
+                    })}
+                  </paper-listbox>
+                </paper-dropdown-menu>
+              `}
+
+        ${customElements.get("ha-entity-picker")
+            ? html`
+                <ha-entity-picker
+                label="USPS Camera Entity"
+                  .hass="${this.hass}"
+                  .value="${this._usps_camera}"
+                  .configValue=${"usps_camera"}
+                  domain-filter="camera"
+                  @change="${this._valueChanged}"
+                  allow-custom-entity
+                ></ha-entity-picker>
+              `
+            : html`
+                <paper-dropdown-menu
+                  label="USPS Camera Entity"
+                  @value-changed="${this._valueChanged}"
+                  .configValue="${"usps_camera"}"
+                >
+                  <paper-listbox
+                    slot="dropdown-content"
+                    .selected="${camera_entities.indexOf(this._usps_camera)}"
+                  >
+                    ${camera_entities.map((camera_entity) => {
+                      return html`
+                        <paper-item>${camera_entity}</paper-item>
+                      `;
+                    })}
+                  </paper-listbox>
+                </paper-dropdown-menu>
+              `}
+
+        ${customElements.get("ha-entity-picker")
+            ? html`
+                <ha-entity-picker
+                label="UPS Camera Entity"
+                  .hass="${this.hass}"
+                  .value="${this._ups_camera}"
+                  .configValue=${"ups_camera"}
+                  domain-filter="camera"
+                  @change="${this._valueChanged}"
+                  allow-custom-entity
+                ></ha-entity-picker>
+              `
+            : html`
+                <paper-dropdown-menu
+                  label="UPS Camera Entity"
+                  @value-changed="${this._valueChanged}"
+                  .configValue="${"ups_camera"}"
+                >
+                  <paper-listbox
+                    slot="dropdown-content"
+                    .selected="${camera_entities.indexOf(this._ups_camera)}"
+                  >
+                    ${camera_entities.map((camera_entity) => {
+                      return html`
+                        <paper-item>${camera_entity}</paper-item>
+                      `;
+                    })}
+                  </paper-listbox>
+                </paper-dropdown-menu>
+              `}
+
+        <ha-switch
+            .checked=${this._enable_camera_rotation}
+            .configValue="${"enable_camera_rotation"}"
+            @change="${this._valueChanged}"
+            >Enable Camera Rotation</ha-switch
+          >
         </div>
       </div>
     `;

@@ -32,7 +32,8 @@ class MailAndPackagesCard extends LitElement {
     static get properties() {
         return {
             _config: {},
-            hass: {}
+            hass: {},
+            _currentCameraIndex: { type: Number }
         };
     }
 
@@ -50,6 +51,7 @@ class MailAndPackagesCard extends LitElement {
             throw new Error("The sensor sensor.mail_updated is not found or not defined in lovelace.");
         }
         this._config = config;
+        this._currentCameraIndex = 0;
     }
 
     shouldUpdate(changedProps) {
@@ -102,6 +104,7 @@ class MailAndPackagesCard extends LitElement {
         const usps_packages = this._config.usps_packages ? this.hass.states[this._config.usps_packages].state : false;
         const amazon_packages = this._config.amazon_packages ? this.hass.states[this._config.amazon_packages].state : false;
         const usps_mail = this._config.usps_mail ? this.hass.states[this._config.usps_mail].state : false;
+        const enable_links = this._config.enable_links !== false;
         
         const mail_icon = usps_mail > 0 ? 'mailbox-open-up' : 'mailbox-outline';
         const usps_icon = usps_packages > 0 ? 'package-variant' : 'package-variant-closed';
@@ -145,35 +148,35 @@ class MailAndPackagesCard extends LitElement {
         ? html`
         <li class="item"><span class="mail-ha-icon">
         <ha-icon icon="mdi:${mail_icon}"></ha-icon>
-        </span><a href="https://informeddelivery.usps.com/" title="Open the USPS Informed Delivery site" target="_blank"><span class="no-break">Mail: ${usps_mail}</span></a></li>
+        </span>${enable_links ? html`<a href="https://informeddelivery.usps.com/" title="Open the USPS Informed Delivery site" target="_blank"><span class="no-break">Mail: ${usps_mail}</span></a>` : html`<span class="no-break">Mail: ${usps_mail}</span>`}</li>
             `
             : ""}
     ${usps_packages
         ? html`
         <li class="item"><span class="mail-ha-icon">
                 <ha-icon icon="mdi:${usps_icon}"></ha-icon>
-            </span><a href="https://informeddelivery.usps.com/" title="Open the USPS Informed Delivery site" target="_blank"><span class="no-break">USPS: ${usps_packages}</span></a></li>
+            </span>${enable_links ? html`<a href="https://informeddelivery.usps.com/" title="Open the USPS Informed Delivery site" target="_blank"><span class="no-break">USPS: ${usps_packages}</span></a>` : html`<span class="no-break">USPS: ${usps_packages}</span>`}</li>
             `
             : ""}
     ${ups_packages
     ? html`
         <li class="item"><span class="mail-ha-icon">
                 <ha-icon icon="mdi:${ups_icon}"></ha-icon>
-            </span><a href="https://wwwapps.ups.com/mcdp" title="Open the UPS MyChoice site" target="_blank"><span class="no-break">UPS: ${ups_packages}</span></a></li>
+            </span>${enable_links ? html`<a href="https://wwwapps.ups.com/mcdp" title="Open the UPS MyChoice site" target="_blank"><span class="no-break">UPS: ${ups_packages}</span></a>` : html`<span class="no-break">UPS: ${ups_packages}</span>`}</li>
         `
         : ""}
         ${fedex_packages
         ? html`
         <li class="item"><span class="mail-ha-icon">
                 <ha-icon icon="mdi:${fedex_icon}"></ha-icon>
-            </span><a href="https://www.fedex.com/apps/fedextracking" title="Open the Fedex site" target="_blank"><span class="no-break">Fedex: ${fedex_packages}</span></a></li>
+            </span>${enable_links ? html`<a href="https://www.fedex.com/apps/fedextracking" title="Open the Fedex site" target="_blank"><span class="no-break">Fedex: ${fedex_packages}</span></a>` : html`<span class="no-break">Fedex: ${fedex_packages}</span>`}</li>
             `
             : ""}
     ${amazon_packages
     ? html`
         <li class="item"><span class="mail-ha-icon">
                 <ha-icon icon="mdi:${amazon_icon}"></ha-icon>
-            </span><a href="https://www.amazon.com/gp/css/order-history/" title="Open the Amazon site" target="_blank"><span class="no-break">Amazon: ${amazon_packages}</span></a></li>
+            </span>${enable_links ? html`<a href="https://www.amazon.com/gp/css/order-history/" title="Open the Amazon site" target="_blank"><span class="no-break">Amazon: ${amazon_packages}</span></a>` : html`<span class="no-break">Amazon: ${amazon_packages}</span>`}</li>
             `
             : ""}
     </ul>
@@ -197,15 +200,56 @@ class MailAndPackagesCard extends LitElement {
     }
 
     renderCamera(camera) {
-        const camera_entity = this._config.camera_entity;
-        if (!camera || camera.length === 0 || !camera_entity || camera_entity.length === 0) {
+        const cameras = {
+            amazon: this._config.amazon_camera,
+            fedex: this._config.fedex_camera,
+            usps: this._config.usps_camera,
+            ups: this._config.ups_camera
+        };
+        
+        const enable_rotation = this._config.enable_camera_rotation === true;
+        
+        if (!camera || camera.length === 0) {
             return html ``;
         }
 
-        const cameraObjt = this._config.camera_entity in this.hass.states ? this.hass.states[this._config.camera_entity] : null;
-        const camera_url = this.hass.states[this._config.camera_entity].attributes.entity_picture;
+        // Get package counts for each service
+        const amazon_packages = this._config.amazon_packages ? this.hass.states[this._config.amazon_packages]?.state : 0;
+        const fedex_packages = this._config.fedex_packages ? this.hass.states[this._config.fedex_packages]?.state : 0;
+        const ups_packages = this._config.ups_packages ? this.hass.states[this._config.ups_packages]?.state : 0;
+        const usps_packages = this._config.usps_packages ? this.hass.states[this._config.usps_packages]?.state : 0;
+        const usps_mail = this._config.usps_mail ? this.hass.states[this._config.usps_mail]?.state : 0;
 
-        const lang = this.hass.selectedLanguage || this.hass.language;
+        // Build array of cameras that have packages/mail
+        const activeCameras = [];
+        if (amazon_packages > 0 && cameras.amazon) activeCameras.push({ service: 'amazon', entity: cameras.amazon });
+        if (fedex_packages > 0 && cameras.fedex) activeCameras.push({ service: 'fedex', entity: cameras.fedex });
+        if (ups_packages > 0 && cameras.ups) activeCameras.push({ service: 'ups', entity: cameras.ups });
+        if ((usps_packages > 0 || usps_mail > 0) && cameras.usps) activeCameras.push({ service: 'usps', entity: cameras.usps });
+
+        if (activeCameras.length === 0) {
+            return html ``;
+        }
+
+        let cameraIndex = 0;
+        
+        if (enable_rotation && activeCameras.length > 1) {
+            // Rotate through active cameras
+            cameraIndex = this._currentCameraIndex % activeCameras.length;
+            // Cycle to next camera every 30 seconds
+            setTimeout(() => {
+                this._currentCameraIndex = (this._currentCameraIndex + 1) % activeCameras.length;
+                this.requestUpdate();
+            }, 30000);
+        }
+
+        const selectedCamera = activeCameras[cameraIndex];
+        
+        if (!selectedCamera || !(selectedCamera.entity in this.hass.states)) {
+            return html ``;
+        }
+
+        const camera_url = this.hass.states[selectedCamera.entity].attributes.entity_picture;
 
         this.numberElements++;
         return html `
