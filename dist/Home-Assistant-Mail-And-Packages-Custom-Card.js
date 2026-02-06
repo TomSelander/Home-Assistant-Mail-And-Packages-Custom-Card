@@ -237,15 +237,17 @@ class MailAndPackagesCard extends LitElement {
         if (ups_packages > 0 && cameras.ups) activeCameras.push({ service: 'ups', entity: cameras.ups });
         if ((usps_packages > 0 || usps_mail > 0) && cameras.usps) activeCameras.push({ service: 'usps', entity: cameras.usps });
 
+        // store active cameras so click handler can use them
+        this._activeCameras = activeCameras;
+
         if (activeCameras.length === 0) {
             return html ``;
         }
 
-        let cameraIndex = 0;
+        // always use the current index (mod length) so clicks advance the visible camera
+        let cameraIndex = this._currentCameraIndex % activeCameras.length;
         
         if (enable_rotation && activeCameras.length > 1) {
-            // Rotate through active cameras
-            cameraIndex = this._currentCameraIndex % activeCameras.length;
             // Cycle to next camera every 30 seconds
             setTimeout(() => {
                 this._currentCameraIndex = (this._currentCameraIndex + 1) % activeCameras.length;
@@ -267,7 +269,20 @@ class MailAndPackagesCard extends LitElement {
     `;
     }
 
-    _handleClick() {
+    _handleClick(ev) {
+        // if click on a link, let it pass through
+        if (ev && ev.target && ev.target.closest && ev.target.closest('a')) {
+            return;
+        }
+
+        const enableClickCycle = this._config.enable_camera_click_cycle !== false;
+        if (enableClickCycle && this._activeCameras && this._activeCameras.length > 1) {
+            // advance to next active camera
+            this._currentCameraIndex = (this._currentCameraIndex + 1) % this._activeCameras.length;
+            this.requestUpdate();
+            return;
+        }
+
         fireEvent(this, "hass-more-info", {
             entityId: this._config.updated
         });

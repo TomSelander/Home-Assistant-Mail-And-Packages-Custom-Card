@@ -108,6 +108,10 @@ export class MailAndPackagesCardEditor extends LitElement {
         return this._config.enable_camera_rotation === true;
     }
 
+    get _enable_camera_click_cycle() {
+      return this._config.enable_camera_click_cycle !== false;
+    }
+
     get _details() {
         return this._config.details !== false;
     }
@@ -574,6 +578,14 @@ export class MailAndPackagesCardEditor extends LitElement {
             <ha-switch
               .checked=${this._enable_camera_rotation}
               .configValue="${"enable_camera_rotation"}"
+              @change="${this._valueChanged}"
+            ></ha-switch>
+          </div>
+          <div class="switch-row">
+            <div class="switch-label">Enable Camera Click Cycle</div>
+            <ha-switch
+              .checked=${this._enable_camera_click_cycle}
+              .configValue="${"enable_camera_click_cycle"}"
               @change="${this._valueChanged}"
             ></ha-switch>
           </div>
