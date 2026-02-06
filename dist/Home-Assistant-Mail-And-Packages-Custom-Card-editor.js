@@ -40,87 +40,87 @@ export class MailAndPackagesCardEditor extends LitElement {
     }
 
     get _name() {
-        return this._config.name || "";
+      return (this._config && this._config.name) || "";
     }
 
     get _updated() {
-        return this._config.updated || "";
+      return (this._config && this._config.updated) || "";
     }
 
     get _deliveries_message() {
-        return this._config.deliveries_message || "";
+      return (this._config && this._config.deliveries_message) || "";
     }
 
     get _packages_delivered() {
-        return this._config.packages_delivered || "";
+      return (this._config && this._config.packages_delivered) || "";
     }
 
     get _packages_in_transit() {
-        return this._config.packages_in_transit || "";
+      return (this._config && this._config.packages_in_transit) || "";
     }
 
     get _fedex_packages() {
-        return this._config.fedex_packages || "";
+      return (this._config && this._config.fedex_packages) || "";
     }
 
     get _ups_packages() {
-        return this._config.ups_packages || "";
+      return (this._config && this._config.ups_packages) || "";
     }
 
     get _usps_packages() {
-        return this._config.usps_packages || "";
+      return (this._config && this._config.usps_packages) || "";
     }
 
     get _amazon_packages() {
-        return this._config.amazon_packages || "";
+      return (this._config && this._config.amazon_packages) || "";
     }
 
     get _usps_mail() {
-        return this._config.usps_mail || "";
+      return (this._config && this._config.usps_mail) || "";
     }
 
     get _gif_sensor() {
-        return this._config.gif_sensor || "";
+      return (this._config && this._config.gif_sensor) || "";
     }
 
     get _amazon_camera() {
-        return this._config.amazon_camera || "";
+      return (this._config && this._config.amazon_camera) || "";
     }
 
     get _fedex_camera() {
-        return this._config.fedex_camera || "";
+      return (this._config && this._config.fedex_camera) || "";
     }
 
     get _usps_camera() {
-        return this._config.usps_camera || "";
+      return (this._config && this._config.usps_camera) || "";
     }
 
     get _ups_camera() {
-        return this._config.ups_camera || "";
+      return (this._config && this._config.ups_camera) || "";
     }
 
     get _image() {
-        return this._config.image !== false;
+      return this._config ? this._config.image !== false : true;
     }
 
     get _camera() {
-        return this._config.camera !== false;
+      return this._config ? this._config.camera !== false : true;
     }
 
     get _enable_camera_rotation() {
-        return this._config.enable_camera_rotation === true;
+      return this._config ? this._config.enable_camera_rotation === true : false;
     }
 
     get _enable_camera_click_cycle() {
-      return this._config.enable_camera_click_cycle !== false;
+      return this._config ? this._config.enable_camera_click_cycle !== false : true;
     }
 
     get _details() {
-        return this._config.details !== false;
+      return this._config ? this._config.details !== false : true;
     }
 
     get _enable_links() {
-        return this._config.enable_links !== false;
+      return this._config ? this._config.enable_links !== false : true;
     }
 
     render() {
